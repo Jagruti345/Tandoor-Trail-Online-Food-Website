@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kitchen Console — Tandoor & Trail Admin</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=1784259915">
+</head>
+<body class="admin-body">
+
+<!-- ============ PASSCODE GATE ============ -->
+<div class="gate" id="gate">
+  <form class="gate-card" id="gateForm">
+    <span class="eyebrow">Kitchen console</span>
+    <h1>Staff only, past this point.</h1>
+    <p>Enter the admin passcode. This checks against your live backend — set <code>ADMIN_PASSCODE</code> in your Lambda's environment variables.</p>
+    <input type="password" id="gatePasscode" placeholder="Passcode" autocomplete="off" autofocus>
+    <button type="submit" class="btn btn-primary btn-block">Enter console</button>
+    <p class="form-note error" id="gateNote"></p>
+  </form>
+</div>
+
+<div class="admin-shell" id="adminShell" hidden>
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="admin-sidebar">
+    <a href="index.html" class="brand">
+      <span class="brand-mark">
+        <svg width="26" height="26" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M15 2C15 2 9 9.5 9 15.5C9 19.6 11.7 23 15 23C18.3 23 21 19.6 21 15.5C21 9.5 15 2 15 2Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+          <path d="M15 23V27" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          <path d="M11 27H19" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+      </span>
+      <span class="brand-text small">Kitchen<em>&amp;</em>Console</span>
+    </a>
+
+    <nav class="admin-nav" aria-label="Admin sections">
+      <button class="admin-nav-link active" data-view="overview">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 13H10V4H4V13Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M14 20H20V4H14V20Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M4 20H10V17H4V20Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        Overview
+      </button>
+      <button class="admin-nav-link" data-view="orders">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 4H19V20L15.5 18L12 20L8.5 18L5 20V4Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M8 9H16M8 13H16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        Orders
+      </button>
+      <button class="admin-nav-link" data-view="menu">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 3V21M5 3C5 3 5 8 8 8C11 8 11 3 11 3V21M17 3C14.5 3 14 6 14 8.5C14 10 15 11 16 11V21" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Menu
+      </button>
+      <button class="admin-nav-link" data-view="customers">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.4" stroke="currentColor" stroke-width="1.6"/><path d="M5 20C5 16.5 8 14.5 12 14.5C16 14.5 19 16.5 19 20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        Customers
+      </button>
+    </nav>
+
+    <div class="admin-sidebar-foot">
+      <span class="live-dot" id="liveDot"></span>
+      <span id="modeLabel">Checking connection…</span>
+    </div>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <div class="admin-main">
+
+    <header class="admin-topbar">
+      <h1 id="viewTitle">Overview</h1>
+      <div class="admin-topbar-actions">
+        <span class="admin-updated" id="lastUpdated"></span>
+        <button class="btn btn-ghost" id="refreshBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 12C4 7.6 7.6 4 12 4C15 4 17.6 5.7 19 8.2M20 12C20 16.4 16.4 20 12 20C9 20 6.4 18.3 5 15.8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M19 4V8.5H14.5M5 20V15.5H9.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Refresh
+        </button>
+      </div>
+    </header>
+
+    <!-- ===== OVERVIEW ===== -->
+    <section class="admin-view" id="view-overview">
+
+      <div class="stat-grid" id="statGrid"></div>
+
+      <div class="admin-panels">
+        <div class="panel">
+          <div class="panel-head">
+            <h3>Revenue lookup</h3>
+            <p>Delivered-order revenue for any month.</p>
+          </div>
+          <form class="revenue-form" id="revenueForm">
+            <input type="month" id="revenueMonth">
+            <button type="submit" class="btn btn-primary">Look up</button>
+          </form>
+          <div class="revenue-result" id="revenueResult"></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <h3>Top dishes</h3>
+            <p>Ranked by quantity sold, all-time.</p>
+          </div>
+          <ol class="top-foods" id="topFoods"></ol>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <h3>Last 5 minutes</h3>
+            <p>Freshly fired orders, live.</p>
+          </div>
+          <div class="mini-orders" id="recentOrders"></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <h3>Today</h3>
+            <p>Everything ordered since midnight.</p>
+          </div>
+          <div class="mini-orders" id="todayOrders"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== ORDERS ===== -->
+    <section class="admin-view" id="view-orders" hidden>
+      <div class="admin-toolbar">
+        <select id="orderStatusFilter">
+          <option value="">All statuses</option>
+        </select>
+        <input type="text" id="orderSearch" placeholder="Search by customer name…">
+        <button class="btn btn-ghost" id="orderSearchBtn">Search</button>
+      </div>
+
+      <div class="table-wrap">
+        <table class="admin-table" id="ordersTable">
+          <thead>
+            <tr>
+              <th>Order</th><th>Customer</th><th>Phone</th><th>Items</th><th>Total</th><th>Status</th><th>Placed</th><th></th>
+            </tr>
+          </thead>
+          <tbody id="ordersBody"></tbody>
+        </table>
+      </div>
+      <p class="table-empty" id="ordersEmpty"></p>
+    </section>
+
+    <!-- ===== MENU ===== -->
+    <section class="admin-view" id="view-menu" hidden>
+      <div class="admin-panels admin-panels-menu">
+        <div class="panel">
+          <div class="panel-head">
+            <h3 id="menuFormTitle">Add a dish</h3>
+            <p>New dishes appear on the storefront instantly.</p>
+          </div>
+          <form id="menuForm" class="menu-form">
+            <input type="hidden" id="menuFoodId">
+            <label class="field">
+              <span>Dish name</span>
+              <input type="text" id="menuName" required placeholder="Smoked Paneer Tikka">
+            </label>
+            <div class="field-row">
+              <label class="field">
+                <span>Price (₹)</span>
+                <input type="number" id="menuPrice" min="0" step="1" required placeholder="220">
+              </label>
+              <label class="field">
+                <span>Category</span>
+                <input type="text" id="menuCategory" placeholder="Starters" list="categoryList">
+                <datalist id="categoryList"></datalist>
+              </label>
+            </div>
+            <label class="field">
+              <span>Description</span>
+              <textarea id="menuDescription" rows="2" placeholder="Charred over coals with a smoked yogurt marinade…"></textarea>
+            </label>
+            <label class="field file-field" for="menuImageInput">
+              <span>Dish photo</span>
+              <input type="file" id="menuImageInput" accept="image/*">
+              <div class="file-preview" id="menuFilePreview">
+                <span class="file-preview-hint">Uploads to your S3 bucket via /upload</span>
+              </div>
+            </label>
+            <label class="field field-checkbox">
+              <input type="checkbox" id="menuAvailable" checked>
+              <span>Available on the storefront</span>
+            </label>
+            <div class="field-row">
+              <button type="submit" class="btn btn-primary btn-block" id="menuSubmitBtn">Add dish</button>
+              <button type="button" class="btn btn-ghost" id="menuCancelEdit" hidden>Cancel edit</button>
+            </div>
+            <p class="form-note" id="menuFormNote"></p>
+          </form>
+        </div>
+
+        <div class="panel menu-list-panel">
+          <div class="panel-head">
+            <h3>Current board</h3>
+            <p id="menuCount">—</p>
+          </div>
+          <div class="admin-menu-grid" id="adminMenuGrid"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== CUSTOMERS ===== -->
+    <section class="admin-view" id="view-customers" hidden>
+      <div class="table-wrap">
+        <table class="admin-table">
+          <thead><tr><th>Name</th><th>Phone</th><th>Email</th><th>Address</th><th>Joined</th></tr></thead>
+          <tbody id="customersBody"></tbody>
+        </table>
+      </div>
+      <p class="table-empty" id="customersEmpty"></p>
+    </section>
+
+  </div>
+</div>
+
+<!-- ===== ORDER DETAIL MODAL ===== -->
+<div class="modal-backdrop" id="orderModalBackdrop"></div>
+<div class="modal" id="orderModal" role="dialog" aria-modal="true" aria-labelledby="orderModalTitle">
+  <div class="modal-inner">
+    <button class="icon-btn modal-close" id="orderModalClose" aria-label="Close">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M5 5L19 19M19 5L5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+    </button>
+    <p class="eyebrow" id="orderModalEyebrow">Order</p>
+    <h3 id="orderModalTitle">ORD-XXXX</h3>
+    <div class="order-detail-body" id="orderModalBody"></div>
+
+    <label class="field" style="margin-top:1.2rem;">
+      <span>Update status</span>
+      <select id="orderStatusSelect"></select>
+    </label>
+    <div class="field-row">
+      <button class="btn btn-primary btn-block" id="orderStatusSaveBtn">Save status</button>
+      <button class="btn btn-ghost" id="orderDeleteBtn">Delete order</button>
+    </div>
+    <p class="form-note" id="orderModalNote"></p>
+
+    <div class="ember-trail" id="orderModalTrail" style="margin-top:1.6rem;"></div>
+  </div>
+</div>
+
+<div class="toast-stack" id="toastStack" aria-live="assertive"></div>
+
+<script src="config.js?v=1784254311"></script>
+<script src="admin.js?v=1784254311"></script>
+</body>
+</html>
