@@ -6,7 +6,7 @@ A full-stack food ordering system: a customer-facing storefront with live order 
   Add your own screenshots by dropping images into docs/screenshots/
   using the exact filenames below, or update the paths to match yours.
 -->
-<img width="1900" height="905" alt="home" src="https://github.com/user-attachments/assets/deb14051-4e96-4f9a-8f9d-a276877a47cd" />
+<img width="100%" alt="home" src="https://github.com/user-attachments/assets/deb14051-4e96-4f9a-8f9d-a276877a47cd" />
 
 
 ---
@@ -55,20 +55,20 @@ A full-stack food ordering system: a customer-facing storefront with live order 
 
 | Storefront | Menu & Cart |
 |---|---|
-| <img width="1900" height="905" alt="home" src="https://github.com/user-attachments/assets/32d2835b-eeda-477f-a16e-4eb83366c7b4" />
- | <img width="1900" height="900" alt="menu" src="https://github.com/user-attachments/assets/10379f77-96a4-49be-b59a-dc94f0c40db1" />
+| <img width="100%" alt="home" src="https://github.com/user-attachments/assets/32d2835b-eeda-477f-a16e-4eb83366c7b4" />
+ | <img width="100%" alt="menu" src="https://github.com/user-attachments/assets/10379f77-96a4-49be-b59a-dc94f0c40db1" />
  |
 
 | Order Tracking | Customer Account |
 |---|---|
-| <img width="1896" height="905" alt="track" src="https://github.com/user-attachments/assets/d26fe6d8-30ff-43f9-9e5a-c2b04a7aad5a" />
- | <img width="1897" height="907" alt="account" src="https://github.com/user-attachments/assets/3fe7c9f1-f1d0-46b1-817a-ad2ed732210f" />
+| <img width="100%" alt="track" src="https://github.com/user-attachments/assets/d26fe6d8-30ff-43f9-9e5a-c2b04a7aad5a" />
+ | <img width="100%" alt="account" src="https://github.com/user-attachments/assets/3fe7c9f1-f1d0-46b1-817a-ad2ed732210f" />
  |
 
 | Admin Overview | Admin Orders |
 |---|---|
-| <img width="1900" height="912" alt="adminoverview" src="https://github.com/user-attachments/assets/297c2461-c4c7-4075-bdb3-7d0d50533030" />
- | <img width="1902" height="917" alt="adminorders" src="https://github.com/user-attachments/assets/87766db8-8e67-4176-ad2c-b7884bcdd9b8" />
+| <img width="100%" alt="adminoverview" src="https://github.com/user-attachments/assets/297c2461-c4c7-4075-bdb3-7d0d50533030" />
+ | <img width="100%" alt="adminorders" src="https://github.com/user-attachments/assets/87766db8-8e67-4176-ad2c-b7884bcdd9b8" />
  |
 
 > 💡 To add these: create a `docs/screenshots/` folder in your repo and drop in PNGs with the filenames above — the images will render automatically on GitHub.
